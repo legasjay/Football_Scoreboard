@@ -6,11 +6,18 @@ import ru.legasjay.Football.World.Cup.Scoreboard.models.Team;
 @Data
 public class MatchDTO {
 
-    private Long id;
+    private int matchId;
     private Team homeTeam;
     private Team awayTeam;
     private int homeScore;
     private int awayScore;
-    private String matchTime;
+    private boolean isShowHomeAway = false;
+    private boolean isMatchOver = false;
 
+    private String matchTime;
+    private int totalScore;
+
+    public int getTotalGoals() {
+        return homeScore + awayScore;
+    }
 }

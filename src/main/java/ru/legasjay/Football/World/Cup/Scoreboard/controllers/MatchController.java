@@ -1,9 +1,12 @@
 package ru.legasjay.Football.World.Cup.Scoreboard.controllers;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.legasjay.Football.World.Cup.Scoreboard.dto.MatchDTO;
+import ru.legasjay.Football.World.Cup.Scoreboard.models.Match;
 import ru.legasjay.Football.World.Cup.Scoreboard.models.Team;
 import ru.legasjay.Football.World.Cup.Scoreboard.servicies.MatchService;
 import ru.legasjay.Football.World.Cup.Scoreboard.servicies.TeamService;
@@ -21,6 +24,9 @@ public class MatchController {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @GetMapping("/scoreboard")
     public String getScoreboard(Model model) {
         model.addAttribute("current_matches", matchService.getCurrentMatches());
@@ -33,21 +39,14 @@ public class MatchController {
         model.addAttribute("matches", matchService.getCurrentMatches());
         List<Team> teams = teamService.getAllTeams();
         model.addAttribute("teams", teams);
-        // Добавить команды и др. атрибуты для админской страницы
+        model.addAttribute("newMatchDTO", new MatchDTO());
         return "score_board_admin";
     }
 
-    // Метод для добавления и редактирования матчей
-
-
     @PostMapping("/add")
-    public String addMatch(@RequestParam Integer homeTeam,
-                           @RequestParam Integer awayTeam,
-                           @RequestParam int homeScore,
-                           @RequestParam int awayScore,
-                           @RequestParam(required = false, defaultValue = "false") boolean isShowHomeAway ) {
-        matchService.addMatch(homeTeam, awayTeam, homeScore, awayScore, isShowHomeAway);
-        return "redirect:/matches/admin"; // Предполагая, что это URL для админской страницы
+    public String addMatch(@ModelAttribute MatchDTO newMatchDTO) {
+        matchService.addMatch(newMatchDTO);
+        return "redirect:/matches/admin";
     }
 
     @PostMapping("/update")
@@ -64,5 +63,12 @@ public class MatchController {
         return "redirect:/matches/admin";
     }
 
-    // Здесь также добавьте методы для управления командами
+    public MatchDTO convertMatchToMatchDTO(Match match) {
+        return modelMapper.map(match, MatchDTO.class);
+    }
+
+    public Match convertMatchDTOToMatch(MatchDTO matchDTO) {
+        return modelMapper.map(matchDTO, Match.class);
+    }
+
 }

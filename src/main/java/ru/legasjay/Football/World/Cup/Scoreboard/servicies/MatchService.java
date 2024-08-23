@@ -2,6 +2,7 @@ package ru.legasjay.Football.World.Cup.Scoreboard.servicies;
 
 
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.legasjay.Football.World.Cup.Scoreboard.dto.MatchDTO;
@@ -21,6 +22,9 @@ public class MatchService {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     public List<Match> getCurrentMatches() {
         return matchRepository.findCurrentMatchesOrderedByScore();
     }
@@ -34,17 +38,19 @@ public class MatchService {
     }
 
     // Другие методы для добавления команд и редактирования матчей
-    public void addMatch(Integer homeTeam, Integer awayTeam, int homeScore, int awayScore, Boolean isShowHomeAway) {
-        Match match = new Match();
-
-        match.setHomeTeam(teamRepository.findById(homeTeam).orElseThrow(()->new TeamNotFoundException("team not found")));
-        match.setAwayTeam(teamRepository.findById(awayTeam).orElseThrow(()->new TeamNotFoundException("team not found")));
-        match.setHomeScore(homeScore);
-        match.setAwayScore(awayScore);
-        match.setMatchOver(false);
-        match.setStartTime(System.currentTimeMillis());
-        match.setShowHomeAway(isShowHomeAway);
+    public void addMatch(MatchDTO matchDTO) {
+        Match match = convertMatchDTOToMatch(matchDTO);
+        enrichMatch(match);
         matchRepository.save(match);
+
+//        match.setHomeTeam(teamRepository.findById(homeTeam).orElseThrow(()->new TeamNotFoundException("team not found")));
+//        match.setAwayTeam(teamRepository.findById(awayTeam).orElseThrow(()->new TeamNotFoundException("team not found")));
+//        match.setHomeScore(homeScore);
+//        match.setAwayScore(awayScore);
+//        match.setMatchOver(false);
+//        match.setStartTime(System.currentTimeMillis());
+//        match.setShowHomeAway(isShowHomeAway);
+
     }
 
     public void updateMatch(int id, int homeScore, int awayScore) {
@@ -62,7 +68,7 @@ public class MatchService {
 
     public MatchDTO createMatchDTO(Match match) {
         MatchDTO dto = new MatchDTO();
-        dto.setId(match.getMatchId());
+        dto.setMatchId(match.getMatchId());
         dto.setHomeTeam(match.getHomeTeam());
         dto.setAwayTeam(match.getAwayTeam());
         dto.setHomeScore(match.getHomeScore());
@@ -84,6 +90,18 @@ public class MatchService {
         long minutes = seconds / 60;
         seconds = seconds % 60;
         return String.format("%02d:%02d", minutes, seconds);
+    }
+
+    public MatchDTO convertMatchToMatchDTO(Match match) {
+        return modelMapper.map(match, MatchDTO.class);
+    }
+
+    public Match convertMatchDTOToMatch(MatchDTO matchDTO) {
+        return modelMapper.map(matchDTO, Match.class);
+    }
+
+    public void enrichMatch(Match match) {
+        match.setStartTime(System.currentTimeMillis());
     }
 }
 

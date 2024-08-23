@@ -9,7 +9,7 @@ import lombok.Data;
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long matchId;
+    private int matchId;
 
 
     @ManyToOne
@@ -22,12 +22,10 @@ public class Match {
 
     private int homeScore;
     private int awayScore;
-    private boolean isShowHomeAway;
+    private boolean isShowHomeAway = false;
     private long startTime;
-    private boolean isMatchOver;
+    private boolean isMatchOver = false;
 
     // дополнительные методы, если нужно
-    public int getTotalGoals() {
-        return homeScore + awayScore;
-    }
+
 }
