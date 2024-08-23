@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Scoreboard</title>
+</head>
+<body>
+<h1>Текущие матчи</h1>
+<div th:each="match : ${current_matches}" th:if="${!match.isMatchOver}">
+    <h2>
+        <span th:if="${match.isShowHomeAway}">Хозяева поля:</span> <span th:text="${match.homeTeam.teamName}"></span>
+        <span th:if="${match.isShowHomeAway}">На выезде:</span> <span th:text="${match.awayTeam.teamName}"></span>
+    </h2>
+    <h3 th:text="'Счет: ' + ${match.homeScore} + ' : ' + ${match.awayScore}"></h3>
+</div>
+
+<h2>Прошедшие матчи</h2>
+<div th:each="match : ${finished_matches}" th:if="${match.isMatchOver}">
+    <h2>
+        <span th:if="${match.isShowHomeAway}">Хозяева поля:</span> <span th:text="${match.homeTeam.teamName}"></span>
+        <span th:if="${match.isShowHomeAway}">На выезде:</span> <span th:text="${match.awayTeam.teamName}"></span>
+    </h2>
+    <h3 th:text="'Счет: ' + ${match.homeScore} + ' : ' + ${match.awayScore}"></h3>
+</div>
+</body>
+</html>
