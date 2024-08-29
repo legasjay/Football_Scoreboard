@@ -11,6 +11,7 @@
         <span th:if="${match.isShowHomeAway}">На выезде:</span> <span th:text="${match.awayTeam.teamName}"></span>
     </h2>
     <h3 th:text="'Счет: ' + ${match.homeScore} + ' : ' + ${match.awayScore}"></h3>
+    <p th:text="'Время матча: ' + ${match.matchTime}"></p>
 </div>
 
 <h2>Прошедшие матчи</h2>
@@ -20,6 +21,7 @@
         <span th:if="${match.isShowHomeAway}">На выезде:</span> <span th:text="${match.awayTeam.teamName}"></span>
     </h2>
     <h3 th:text="'Счет: ' + ${match.homeScore} + ' : ' + ${match.awayScore}"></h3>
+    <p th:text="'Время матча: ' + ${match.matchTime}"></p>
 </div>
 </body>
 </html>

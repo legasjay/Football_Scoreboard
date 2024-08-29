@@ -26,6 +26,10 @@ public class Match {
     private long startTime;
     private boolean isMatchOver = false;
 
+    public int getTotalGoals() {
+        return this.homeScore + this.awayScore;
+    }
+
     // дополнительные методы, если нужно
 
 }

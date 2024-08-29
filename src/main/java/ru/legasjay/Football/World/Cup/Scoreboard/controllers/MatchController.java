@@ -24,23 +24,28 @@ public class MatchController {
     @Autowired
     private TeamService teamService;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @GetMapping("/scoreboard")
     public String getScoreboard(Model model) {
-        model.addAttribute("current_matches", matchService.getCurrentMatches());
-        model.addAttribute("finished_matches", matchService.getFinishedMatches());
+        model.addAttribute("current_matches",
+                matchService.getAllMatchesAsDTO(matchService.getCurrentMatches()));
+        model.addAttribute("finished_matches",
+                matchService.getAllMatchesAsDTO(matchService.getFinishedMatches()));
         return "scoreboard";
     }
 
     @GetMapping("/admin")
     public String getAdminPage(Model model) {
-        model.addAttribute("matches", matchService.getCurrentMatches());
-        List<Team> teams = teamService.getAllTeams();
-        model.addAttribute("teams", teams);
-        model.addAttribute("newMatchDTO", new MatchDTO());
-        return "score_board_admin";
+        try {
+            model.addAttribute("matches",
+                    matchService.getAllMatchesAsDTO(matchService.getCurrentMatches()));
+            List<Team> teams = teamService.getAllTeams();
+            model.addAttribute("teams", teams);
+            model.addAttribute("newMatchDTO", new MatchDTO());
+            return "score_board_admin";
+        } catch (Exception e) {
+            return e.toString();
+        }
+
     }
 
     @PostMapping("/add")
@@ -50,10 +55,8 @@ public class MatchController {
     }
 
     @PostMapping("/update")
-    public String updateMatch(@RequestParam int id,
-                              @RequestParam int homeScore,
-                              @RequestParam int awayScore) {
-        matchService.updateMatch(id, homeScore, awayScore);
+    public String updateMatch(@ModelAttribute MatchDTO match) {
+        matchService.updateMatch(match);
         return "redirect:/matches/admin";
     }
 
@@ -61,14 +64,6 @@ public class MatchController {
     public String deleteMatch(@RequestParam int id) {
         matchService.deleteMatch(id);
         return "redirect:/matches/admin";
-    }
-
-    public MatchDTO convertMatchToMatchDTO(Match match) {
-        return modelMapper.map(match, MatchDTO.class);
-    }
-
-    public Match convertMatchDTOToMatch(MatchDTO matchDTO) {
-        return modelMapper.map(matchDTO, Match.class);
     }
 
 }
