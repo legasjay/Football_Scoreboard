@@ -24,24 +24,7 @@
 </div>
 
 <h2>Добавить новый матч</h2>
-<!--<form action="#" th:action="@{/matches/add}" method="post" th:object="${newMatchDTO}">-->
-<!--    <label for="homeTeam">Хозяин:</label>-->
-<!--    <select id="homeTeam" name="homeTeam" th:field="*{homeTeam}">-->
-<!--        <option th:each="team : ${teams}" th:value="${team}" th:text="${team.teamName}"></option>-->
-<!--    </select>-->
-<!--    <label for="awayTeam">Гость:</label>-->
-<!--    <select id="awayTeam" name="awayTeam" th:field="*{awayTeam}">-->
-<!--        <option th:each="team : ${teams}" th:value="${team}" th:text="${team.teamName}"></option>-->
-<!--    </select>-->
-<!--    <input type="number" th:field="*{homeScore}" placeholder="Счет хозяев" value="0" />-->
-<!--    <input type="number" th:field="*{awayScore}" placeholder="Счет гостей" value="0"/>-->
-<!--    <label>-->
-<!--        <input type="checkbox" th:field="*{isShowHomeAway}"/> Показать команды "дома" и "на выезде"-->
-<!--    </label>-->
-<!--    <button type="submit">Добавить матч</button>-->
-<!--</form>-->
-
-<form th:action="@{/matches/add}" method="post" th:object="${newMatchDTO}">
+<form action="#" th:action="@{/matches/add}" method="post" th:object="${newMatchDTO}">
     <label for="homeTeam">Хозяин:</label>
     <select id="homeTeam" th:field="*{homeTeamId}"> <!-- Используем homeTeamId -->
         <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.teamName}"></option>

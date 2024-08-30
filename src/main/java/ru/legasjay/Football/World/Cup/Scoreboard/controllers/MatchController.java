@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.legasjay.Football.World.Cup.Scoreboard.dto.CreateMatchDTO;
 import ru.legasjay.Football.World.Cup.Scoreboard.dto.MatchDTO;
 import ru.legasjay.Football.World.Cup.Scoreboard.models.Match;
 import ru.legasjay.Football.World.Cup.Scoreboard.models.Team;
@@ -49,7 +50,7 @@ public class MatchController {
     }
 
     @PostMapping("/add")
-    public String addMatch(@ModelAttribute MatchDTO newMatchDTO) {
+    public String addMatch(@ModelAttribute CreateMatchDTO newMatchDTO) {
         matchService.addMatch(newMatchDTO);
         return "redirect:/matches/admin";
     }

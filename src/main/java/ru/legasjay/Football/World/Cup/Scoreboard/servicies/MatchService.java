@@ -5,14 +5,18 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.legasjay.Football.World.Cup.Scoreboard.dto.CreateMatchDTO;
 import ru.legasjay.Football.World.Cup.Scoreboard.dto.MatchDTO;
 import ru.legasjay.Football.World.Cup.Scoreboard.models.Match;
+import ru.legasjay.Football.World.Cup.Scoreboard.models.Team;
 import ru.legasjay.Football.World.Cup.Scoreboard.repositories.MatchRepository;
 import ru.legasjay.Football.World.Cup.Scoreboard.repositories.TeamRepository;
+import ru.legasjay.Football.World.Cup.Scoreboard.utils.CreateMatchMapper;
 import ru.legasjay.Football.World.Cup.Scoreboard.utils.MatchMapper;
 import ru.legasjay.Football.World.Cup.Scoreboard.utils.TeamNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -27,6 +31,12 @@ public class MatchService {
     @Autowired
     private MatchMapper matchMapper;
 
+    @Autowired
+    private CreateMatchMapper createMatchMapper;
+
+    @Autowired
+    private TeamService teamService;
+
     public List<Match> getCurrentMatches() {
         return matchRepository.findCurrentMatchesOrderedByScore();
     }
@@ -39,8 +49,15 @@ public class MatchService {
         matchRepository.save(match);
     }
 
-    public void addMatch(MatchDTO matchDTO) {
-        Match match = matchMapper.matchDTOToMatch(matchDTO);
+    public void addMatch(CreateMatchDTO createMatchDTO) {
+        Team homeTeam = teamService.findById(createMatchDTO.getHomeTeamId()).orElseThrow(() -> new TeamNotFoundException("not found"));
+        Team awayTeam = teamService.findById(createMatchDTO.getAwayTeamId()).orElseThrow(() -> new TeamNotFoundException("not found"));
+
+        Match match = createMatchMapper.createMatchDtoToMatch(createMatchDTO);
+
+        match.setHomeTeam(homeTeam);
+        match.setAwayTeam(awayTeam);
+
         enrichMatch(match);
         matchRepository.save(match);
     }
