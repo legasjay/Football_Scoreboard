@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Админ - Scoreboard</title>
@@ -8,34 +7,44 @@
 <h1>Управление матчами</h1>
 <div th:each="match : ${matches}">
     <h2>
-        <span th:if="${match.isShowHomeAway}">Хозяева поля:</span> <span th:text="${match.homeTeam.teamName}"></span>
-        <span th:if="${match.isShowHomeAway}">На выезде:</span> <span th:text="${match.awayTeam.teamName}"></span>
+        <span th:if="${match.isShowHomeAway}">Хозяева поля:</span>
+        <span th:text="${match.homeTeam.teamName}"></span>
+        <span th:if="${match.isShowHomeAway}">На выезде:</span>
+        <span th:text="${match.awayTeam.teamName}"></span>
     </h2>
     <h3 th:text="'Счет: ' + ${match.homeScore} + ' : ' + ${match.awayScore}"></h3>
-    <form th:action="@{/matches/update/(id=${match.matchId})}" method="post">
-        <input type="number" name="homeScore" th:value="${match.homeScore}" />
-        <input type="number" name="awayScore" th:value="${match.awayScore}" />
+    <h3 th:text="'id ' + ${match.matchId}"></h3>
+    <p th:text="'Время матча: ' + ${match.matchTime}"></p>
+
+    <form th:action="@{/matches/update}" method="post">
+        <input type="hidden" name="matchId" th:value="${match.matchId}"/>
+        <input type="number" name="homeScore" th:value="${match.homeScore}"/>
+        <input type="number" name="awayScore" th:value="${match.awayScore}"/>
+        <label>
+            <input type="checkbox" name="matchOver" th:checked="${match.matchOver}" /> Завершить матч
+        </label>
         <button type="submit">Обновить результат</button>
     </form>
+
     <form th:action="@{/matches/delete(id=${match.matchId})}" method="post">
         <button type="submit">Удалить матч</button>
     </form>
 </div>
 
 <h2>Добавить новый матч</h2>
-<form action="#" th:action="@{/matches/add}" method="post">
+<form action="#" th:action="@{/matches/add}" method="post" th:object="${createMatchDTO}">
     <label for="homeTeam">Хозяин:</label>
-    <select id="homeTeam" name="homeTeam">
+    <select id="homeTeam" th:field="*{homeTeamId}">
         <option th:each="team : ${teams}" th:value="${team.teamId}" th:text="${team.teamName}"></option>
     </select>
     <label for="awayTeam">Гость:</label>
-    <select id="awayTeam" name="awayTeam">
+    <select id="awayTeam" th:field="*{awayTeamId}">
         <option th:each="team : ${teams}" th:value="${team.teamId}" th:text="${team.teamName}"></option>
     </select>
-    <input type="number" name="homeScore" placeholder="Счет хозяев" value="0" />
-    <input type="number" name="awayScore" placeholder="Счет гостей" value="0"/>
+    <input type="number" th:field="*{homeScore}" placeholder="Счет хозяев" value="0"/>
+    <input type="number" th:field="*{awayScore}" placeholder="Счет гостей" value="0"/>
     <label>
-        <input type="checkbox" name="isShowHomeAway" value="false"/> Показать команды "дома" и "на выезде"
+        <input type="checkbox" th:field="*{showHomeAway}"/> Показать команды "дома" и "на выезде"
     </label>
     <button type="submit">Добавить матч</button>
 </form>
@@ -43,7 +52,7 @@
 <h2>Добавить новую команду</h2>
 <form action="#" th:action="@{/teams/add}" method="post">
     <label for="teamName">Название команды:</label>
-    <input type="text" id="teamName" name="teamName" />
+    <input type="text" id="teamName" name="teamName"/>
     <button type="submit">Добавить команду</button>
 </form>
 </body>

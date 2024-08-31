@@ -1,9 +1,13 @@
 package ru.legasjay.Football.World.Cup.Scoreboard.controllers;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.legasjay.Football.World.Cup.Scoreboard.dto.CreateMatchDTO;
+import ru.legasjay.Football.World.Cup.Scoreboard.dto.MatchDTO;
+import ru.legasjay.Football.World.Cup.Scoreboard.models.Match;
 import ru.legasjay.Football.World.Cup.Scoreboard.models.Team;
 import ru.legasjay.Football.World.Cup.Scoreboard.servicies.MatchService;
 import ru.legasjay.Football.World.Cup.Scoreboard.servicies.TeamService;
@@ -23,38 +27,40 @@ public class MatchController {
 
     @GetMapping("/scoreboard")
     public String getScoreboard(Model model) {
-        model.addAttribute("current_matches", matchService.getCurrentMatches());
-        model.addAttribute("finished_matches", matchService.getFinishedMatches());
+        model.addAttribute("current_matches",
+                matchService.getAllMatchesAsDTO(matchService.getCurrentMatches()));
+        model.addAttribute("finished_matches",
+                matchService.getAllMatchesAsDTO(matchService.getFinishedMatches()));
         return "scoreboard";
     }
 
     @GetMapping("/admin")
     public String getAdminPage(Model model) {
-        model.addAttribute("matches", matchService.getCurrentMatches());
-        List<Team> teams = teamService.getAllTeams();
-        model.addAttribute("teams", teams);
-        // Добавить команды и др. атрибуты для админской страницы
-        return "score_board_admin";
+        try {
+            model.addAttribute("matches",
+                    matchService.getAllMatchesAsDTO(matchService.getCurrentMatches()));
+            List<Team> teams = teamService.getAllTeams();
+            model.addAttribute("teams", teams);
+            model.addAttribute("createMatchDTO", new CreateMatchDTO());
+            return "score_board_admin";
+        } catch (Exception e) {
+            return e.toString();
+        }
+
     }
 
-    // Метод для добавления и редактирования матчей
-
-
     @PostMapping("/add")
-    public String addMatch(@RequestParam Integer homeTeam,
-                           @RequestParam Integer awayTeam,
-                           @RequestParam int homeScore,
-                           @RequestParam int awayScore,
-                           @RequestParam(required = false, defaultValue = "false") boolean isShowHomeAway ) {
-        matchService.addMatch(homeTeam, awayTeam, homeScore, awayScore, isShowHomeAway);
-        return "redirect:/matches/admin"; // Предполагая, что это URL для админской страницы
+    public String addMatch(@ModelAttribute CreateMatchDTO createMatchDTO) {
+        matchService.addMatch(createMatchDTO);
+        return "redirect:/matches/admin";
     }
 
     @PostMapping("/update")
-    public String updateMatch(@RequestParam int id,
+    public String updateMatch(@RequestParam int matchId,
                               @RequestParam int homeScore,
-                              @RequestParam int awayScore) {
-        matchService.updateMatch(id, homeScore, awayScore);
+                              @RequestParam int awayScore,
+                              @RequestParam(defaultValue = "false") boolean matchOver ) {
+        matchService.updateMatch(matchId, homeScore, awayScore, matchOver);
         return "redirect:/matches/admin";
     }
 
@@ -64,5 +70,4 @@ public class MatchController {
         return "redirect:/matches/admin";
     }
 
-    // Здесь также добавьте методы для управления командами
 }

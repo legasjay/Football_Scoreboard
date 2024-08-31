@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest")
 public class MatchRestController {
+
     @Autowired
     private MatchService matchService;
 
@@ -41,4 +42,5 @@ public class MatchRestController {
         teamService.addTeam(team);
         return ResponseEntity.ok().build();
     }
+
 }
