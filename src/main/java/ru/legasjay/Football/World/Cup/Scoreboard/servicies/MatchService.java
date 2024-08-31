@@ -50,8 +50,10 @@ public class MatchService {
     }
 
     public void addMatch(CreateMatchDTO createMatchDTO) {
-        Team homeTeam = teamService.findById(createMatchDTO.getHomeTeamId()).orElseThrow(() -> new TeamNotFoundException("not found"));
-        Team awayTeam = teamService.findById(createMatchDTO.getAwayTeamId()).orElseThrow(() -> new TeamNotFoundException("not found"));
+        Team homeTeam = teamService.findById(createMatchDTO.getHomeTeamId()).orElseThrow(() ->
+                new TeamNotFoundException("Команда с ID " + createMatchDTO.getHomeTeamId() + " не найдена"));
+        Team awayTeam = teamService.findById(createMatchDTO.getAwayTeamId()).orElseThrow(() ->
+                new TeamNotFoundException("Команда с ID " + createMatchDTO.getAwayTeamId() + " не найдена"));
 
         Match match = createMatchMapper.createMatchDtoToMatch(createMatchDTO);
 
@@ -62,27 +64,18 @@ public class MatchService {
         matchRepository.save(match);
     }
 
-    public void updateMatch(MatchDTO matchDTO) {
-        Match match = matchRepository.findById(matchDTO.getMatchId()).orElseThrow(() ->
-                new RuntimeException("Матч не найден"));
-        match.setHomeScore(matchDTO.getHomeScore());
-        match.setAwayScore(matchDTO.getAwayScore());
+    public void updateMatch(int matchId, int homeScore, int awayScore, boolean matchOver) {
+        Match match = matchRepository.findById(matchId).orElseThrow(() ->
+                new RuntimeException("Матч с ID " + matchId + " не найден"));
+        match.setMatchOver(matchOver);
+        match.setHomeScore(homeScore);
+        match.setAwayScore(awayScore);
         matchRepository.save(match);
     }
 
     @Transactional
     public void deleteMatch(int id) {
         matchRepository.deleteById(id);
-    }
-
-    private String formatDuration(long startTime) {
-
-        long currentTime = System.currentTimeMillis();
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - startTime);
-
-        long minutes = seconds / 60;
-        seconds = seconds % 60;
-        return String.format("%02d:%02d", minutes, seconds);
     }
 
     public void enrichMatch(Match match) {

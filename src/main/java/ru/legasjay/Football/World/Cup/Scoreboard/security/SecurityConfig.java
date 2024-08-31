@@ -27,8 +27,8 @@ public class SecurityConfig {
             httpSecurity.
                     csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/admin/**", "/matches/admin").authenticated()     // админская часть требует аутентификации
-                            .requestMatchers(HttpMethod.POST,"/matches/**").authenticated()     // админская часть требует аутентификации
+                            .requestMatchers("/admin/**", "/matches/admin").authenticated()
+                            .requestMatchers(HttpMethod.POST,"/matches/**").authenticated()
                             .anyRequest().permitAll()
                     )
                     .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);

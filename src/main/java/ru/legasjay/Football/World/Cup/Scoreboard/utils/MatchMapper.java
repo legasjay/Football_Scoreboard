@@ -21,4 +21,5 @@ public abstract class MatchMapper {
     public abstract MatchDTO matchToMatchDTO(Match match);
 
     public abstract Match matchDTOToMatch(MatchDTO matchDTO);
+
 }

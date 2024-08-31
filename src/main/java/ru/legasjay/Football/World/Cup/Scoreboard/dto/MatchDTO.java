@@ -11,8 +11,8 @@ public class MatchDTO {
     private Team awayTeam;
     private int homeScore;
     private int awayScore;
-    private boolean isShowHomeAway = false;
-    private boolean isMatchOver = false;
+    private boolean showHomeAway = false;
+    private boolean matchOver = false;
 
     private String matchTime;
     private int totalScore;
@@ -20,4 +20,5 @@ public class MatchDTO {
     public int getTotalGoals() {
         return homeScore + awayScore;
     }
+
 }

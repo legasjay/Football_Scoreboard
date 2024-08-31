@@ -20,5 +20,4 @@ public class TeamController {
         return "redirect:/matches/admin";
     }
 
-    // Другие методы для редактирования и удаления команд
 }

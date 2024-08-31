@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "team")
 @NoArgsConstructor
 public class Team {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer teamId;
@@ -18,4 +19,5 @@ public class Team {
     public Team(String teamName) {
         this.teamName = teamName;
     }
+
 }

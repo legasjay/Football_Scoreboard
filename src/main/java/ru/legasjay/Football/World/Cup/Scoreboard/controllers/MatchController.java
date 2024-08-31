@@ -41,7 +41,7 @@ public class MatchController {
                     matchService.getAllMatchesAsDTO(matchService.getCurrentMatches()));
             List<Team> teams = teamService.getAllTeams();
             model.addAttribute("teams", teams);
-            model.addAttribute("newMatchDTO", new MatchDTO());
+            model.addAttribute("createMatchDTO", new CreateMatchDTO());
             return "score_board_admin";
         } catch (Exception e) {
             return e.toString();
@@ -50,14 +50,17 @@ public class MatchController {
     }
 
     @PostMapping("/add")
-    public String addMatch(@ModelAttribute CreateMatchDTO newMatchDTO) {
-        matchService.addMatch(newMatchDTO);
+    public String addMatch(@ModelAttribute CreateMatchDTO createMatchDTO) {
+        matchService.addMatch(createMatchDTO);
         return "redirect:/matches/admin";
     }
 
     @PostMapping("/update")
-    public String updateMatch(@ModelAttribute MatchDTO match) {
-        matchService.updateMatch(match);
+    public String updateMatch(@RequestParam int matchId,
+                              @RequestParam int homeScore,
+                              @RequestParam int awayScore,
+                              @RequestParam(defaultValue = "false") boolean matchOver ) {
+        matchService.updateMatch(matchId, homeScore, awayScore, matchOver);
         return "redirect:/matches/admin";
     }
 

@@ -20,14 +20,12 @@ public class MyUserRestController {
 
     @PostMapping("/add_user")
     public String addUser(@RequestBody MyUser myUser, BindingResult bindingResult) {
-
         if (!bindingResult.hasErrors()) {
             myUserDetailsService.saveUser(myUser);
             return "user saved";
         } else {
             return "not saved";
         }
-
     }
 
 }

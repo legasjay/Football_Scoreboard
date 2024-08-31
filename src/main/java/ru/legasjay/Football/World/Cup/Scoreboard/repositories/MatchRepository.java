@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface MatchRepository extends JpaRepository<Match, Integer> {
 
-    @Query("SELECT m FROM Match m WHERE m.isMatchOver = false ORDER BY (m.homeScore + m.awayScore) DESC, m.startTime DESC")
+    @Query("SELECT m FROM Match m WHERE m.matchOver = false ORDER BY (m.homeScore + m.awayScore) DESC, m.startTime DESC")
     List<Match> findCurrentMatchesOrderedByScore();
 
-    @Query("SELECT m FROM Match m WHERE m.isMatchOver = false ORDER BY (m.homeScore + m.awayScore) DESC, m.startTime DESC")
+    @Query("SELECT m FROM Match m WHERE m.matchOver = true ORDER BY (m.homeScore + m.awayScore) DESC, m.startTime DESC")
     List<Match> findFinishedMatchesOrderedByScore();
 
 }
